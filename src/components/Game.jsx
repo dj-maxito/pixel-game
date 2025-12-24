@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { dialogues } from "../data/dialogues";
+import GameLoop from "../engine/GameLoop";
+import NPCS from "../data/npcs";
+import DialogueBox from "./DialogueBox";
 
 export default function Game() {
+  console.log("GAME COMPONENT CARGADO");
   const canvasRef = useRef(null);
   const [dialogue, setDialogue] = useState(null);
   const [dialogueIndex, setDialogueIndex] = useState(0);
@@ -9,25 +12,19 @@ export default function Game() {
   const [playerLevel, setPlayerLevel] = useState(1);
 
   useEffect(() => {
-    const ctx = canvasRef.current.getContext("2d");
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    console.log("CTX:", ctx);
 
     const game = new GameLoop(ctx, {
-      onNpcInteract: (npcId) => {
-        setCurrentNpc(npcId);
-        setDialogueIndex(0);
-        setDialogue(dialogues[npcId].lines);
-      },
-      onGuardianInteract: () => {
-        const g = dialogues.guardian;
-        setDialogueIndex(0);
-        setDialogue(playerLevel < g.requiredLevel ? g.locked : g.unlocked);
-      },
-      isPaused: () => dialogue !== null,
+      isPaused: () => false,
     });
 
     game.start();
+
     return () => game.stop();
-  }, [dialogue, playerLevel]);
+  }, []);
 
   function nextDialogue() {
     if (dialogueIndex + 1 < dialogue.length) {

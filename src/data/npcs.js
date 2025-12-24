@@ -54,3 +54,5 @@ export const NPCS = {
     unlocked: ["Has alcanzado el poder necesario.", "La puerta es tuya."],
   },
 };
+
+export default NPCS;

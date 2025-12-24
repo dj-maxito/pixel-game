@@ -1,18 +1,14 @@
-import { Player } from "./entities/Player";
-import { Input } from "./Input";
-import { level1 } from "../level/Level1";
-
-export class GameLoop {
+export default class GameLoop {
   constructor(ctx, callbacks) {
+    console.log("GAMELOOP CONSTRUIDO");
     this.ctx = ctx;
     this.callbacks = callbacks;
-    this.input = new Input();
-    this.player = new Player(this.input);
-    this.level = level1;
     this.running = true;
+    this.lastTime = 0;
   }
 
   start() {
+    console.log("GAMELOOP START");
     requestAnimationFrame(this.loop.bind(this));
   }
 
@@ -20,31 +16,12 @@ export class GameLoop {
     this.running = false;
   }
 
-  loop() {
+  loop(time) {
     if (!this.running) return;
 
-    if (!this.callbacks.isPaused()) {
-      this.player.update();
-    }
+    this.ctx.fillStyle = "green";
+    this.ctx.fillRect(0, 0, 900, 400);
 
-    this.draw();
     requestAnimationFrame(this.loop.bind(this));
-  }
-
-  draw() {
-    this.ctx.clearRect(0, 0, 900, 400);
-
-    this.level.npcs.forEach((npc) => {
-      npc.draw(this.ctx);
-      if (npc.canInteract(this.player)) {
-        if (npc.id === "guardian") {
-          this.callbacks.onGuardianInteract();
-        } else {
-          this.callbacks.onNpcInteract(npc.id);
-        }
-      }
-    });
-
-    this.player.draw(this.ctx);
   }
 }

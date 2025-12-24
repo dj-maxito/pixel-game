@@ -2,7 +2,7 @@ import "./index.css";
 import Game from "./components/Game.jsx";
 
 function App() {
-  console.log("APP CARGADO");
+  console.log("APP CARGADA");
   return (
     <>
       <Game />

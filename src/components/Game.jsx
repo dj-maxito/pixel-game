@@ -15,7 +15,13 @@ export default function Game() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    console.log("CTX:", ctx);
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
     const game = new GameLoop(ctx, {
       isPaused: () => false,
@@ -23,7 +29,10 @@ export default function Game() {
 
     game.start();
 
-    return () => game.stop();
+    return () => {
+      game.stop();
+      window.removeEventListener("resize", resizeCanvas);
+    };
   }, []);
 
   function nextDialogue() {
@@ -40,12 +49,7 @@ export default function Game() {
 
   return (
     <div className="relative">
-      <canvas
-        ref={canvasRef}
-        width={900}
-        height={400}
-        className="border-4 border-black bg-sky-300"
-      />
+      <canvas ref={canvasRef} className="bg-sky-300 h-screen w-screen" />
 
       <div className="absolute top-2 left-2 bg-black text-white px-3 py-1 rounded">
         Nivel: {playerLevel}

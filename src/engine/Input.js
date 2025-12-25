@@ -1,4 +1,4 @@
-export class Input {
+export default class Input {
   constructor() {
     this.keys = {};
 

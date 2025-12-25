@@ -1,4 +1,4 @@
-export class Npc {
+export default class Npc {
   constructor({ x, y, id }) {
     this.x = x;
     this.y = y;

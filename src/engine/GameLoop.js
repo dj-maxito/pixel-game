@@ -122,7 +122,7 @@ export default class GameLoop {
         p.frameX = (p.frameX + 1) % p.columns;
       }
     } else {
-      p.frameX = 0; // idle
+      p.frameX = 1; // idle
     }
 
     // Física

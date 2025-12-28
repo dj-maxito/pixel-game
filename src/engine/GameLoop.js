@@ -2,6 +2,9 @@ import backgroundImg from "../assets/backgrounds/sky.png";
 import groundTileImg from "../assets/sprites/tiles/ground.png";
 import playerImg from "../assets/sprites/player/player_sheet.png";
 import Input from "./Input";
+import forestImg from "../assets/backgrounds/trees.png";
+import cloudsImg from "../assets/backgrounds/clouds.png";
+import mountainsImg from "../assets/backgrounds/mountains.png";
 
 export default class GameLoop {
   constructor(ctx, callbacks) {
@@ -18,12 +21,35 @@ export default class GameLoop {
     this.background.src = backgroundImg;
     this.background.onload = () => console.log("FONDO CARGADO");
 
+    // Nubes de fondo
+    this.clouds = new Image();
+    this.clouds.src = cloudsImg;
+    this.clouds.onload = () => console.log("NUBES CARGADAS");
+
+    this.cloudsX = 0;
+    this.cloudsSpeed = 0.2;
+
+    // MONTAÑAS D FONDO
+    this.mountains = new Image();
+    this.mountains.src = mountainsImg;
+    this.mountains.onload = () => console.log("MONTAÑAS CARGADAS");
+
+    // Arboles del fondo
+    this.forest = new Image();
+    this.forest.src = forestImg;
+    this.forest.onload = () => console.log("BOSQUE CARGADO");
+
     // Piso
     this.groundTile = new Image();
     this.groundTile.src = groundTileImg;
     this.groundTile.onload = () => console.log("PISO CARGADO");
 
     this.ctx.imageSmoothingEnabled = false;
+
+    this.world = {
+      width: 3000,
+      height: this.ctx.canvas.height,
+    };
 
     // Jugador
     this.player = {
@@ -46,6 +72,11 @@ export default class GameLoop {
 
       animTimer: 0,
       animSpeed: 8,
+    };
+
+    this.camera = {
+      x: 0,
+      y: 0,
     };
 
     this.playerSprite = new Image();
@@ -84,6 +115,41 @@ export default class GameLoop {
     // Fondo (sky.png)
     this.ctx.drawImage(this.background, 0, 0, w, h);
 
+    // nUBES (clouds.png)
+    this.cloudsX -= this.cloudsSpeed;
+
+    if (this.cloudsX <= -this.clouds.width) {
+      this.cloudsX = 0;
+    }
+
+    for (let x = this.cloudsX; x < w; x += this.clouds.width) {
+      this.ctx.drawImage(this.clouds, x, 40); // y = 40 (altura)
+    }
+
+    // MONTAÑAS (mountains.png)
+    const mountainsSpeed = 0.3;
+    const mountainsWidth = this.mountains.width;
+    const mountainsY = groundY - this.mountains.height + 305;
+
+    let mountainsStartX = Math.floor(
+      (-this.camera.x * mountainsSpeed) % mountainsWidth
+    );
+
+    for (let x = mountainsStartX - mountainsWidth; x < w; x += mountainsWidth) {
+      this.ctx.drawImage(this.mountains, x, mountainsY);
+    }
+
+    // ádrboles (trees.png)
+    const forestSpeed = 0.6;
+    const forestWidth = this.forest.width;
+    const forestY = groundY - this.forest.height + 49;
+
+    let forestStartX = Math.floor((-this.camera.x * forestSpeed) % forestWidth);
+
+    for (let x = forestStartX - forestWidth; x < w; x += forestWidth) {
+      this.ctx.drawImage(this.forest, x, forestY);
+    }
+
     // Piso repetitivo (ground.png)
     for (let x = 0; x < w; x += tile) {
       this.ctx.drawImage(this.groundTile, x, groundY, tile, tile);
@@ -114,6 +180,15 @@ export default class GameLoop {
 
     p.x += p.vx;
 
+    // límites horizontales del mundo
+    if (p.x < 0) {
+      p.x = 0;
+    }
+
+    if (p.x + playerWidth > this.world.width) {
+      p.x = this.world.width - playerWidth;
+    }
+
     // Animación caminata
     if (p.vx !== 0) {
       p.animTimer++;
@@ -138,6 +213,13 @@ export default class GameLoop {
       p.onGround = false;
     }
 
+    this.camera.x = this.player.x - canvas.width / 2;
+
+    this.camera.x = Math.max(
+      0,
+      Math.min(this.camera.x, this.world.width - canvas.width)
+    );
+
     // Dibujo jugador
     this.ctx.drawImage(
       sprite,
@@ -145,8 +227,8 @@ export default class GameLoop {
       p.frameY * frameHeight,
       frameWidth,
       frameHeight,
-      p.x,
-      p.y + feetOffset,
+      Math.floor(p.x - this.camera.x),
+      Math.floor(p.y + feetOffset - this.camera.y),
       playerWidth,
       playerHeight
     );

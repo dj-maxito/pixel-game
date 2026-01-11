@@ -36,7 +36,6 @@ export default class GameLoop {
 
     // Sonidos
     this.audio.loadSound("interact", "/sounds/interact.wav", 0.6);
-    this.audio.loadSound("dialogue", "/sounds/dialogue.wav", 0.5);
     this.audio.loadSound("select", "/sounds/click.mp3", 0.5);
     this.audio.loadSound("victory", "/sounds/victory.mp3", 0.8);
 

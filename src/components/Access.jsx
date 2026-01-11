@@ -13,7 +13,6 @@ export default function Access({ onSuccess }) {
     if (code === CORRECT_CODE) {
       setClosing(true);
 
-      // ⏳ espera a que termine el fade
       setTimeout(() => {
         onSuccess();
       }, 600);

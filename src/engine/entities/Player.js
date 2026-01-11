@@ -68,7 +68,6 @@ export class Player {
 
   updateAnimation(delta, isWalking) {
     if (!isWalking) {
-      // Idle o salto → frame fijo
       this.frameX = 0;
       return;
     }

@@ -1,11 +1,29 @@
 import NPCS from "../../data/npcs.js";
 
 export default class Npc {
-  constructor({ id, x, y, image, columns, rows, scale = 2.5, dialogue = [] }) {
+  constructor({
+    id,
+    x,
+    y,
+    image,
+    columns,
+    rows,
+    scale = 2.5,
+    name,
+    dialogue = [],
+  }) {
+    console.log("Creando NPC:", id, "name:", name);
     this.id = id;
     this.data = NPCS[id];
 
     this.name = this.data.name;
+
+    if (player && player.name) {
+      console.log(player.name);
+    } else {
+      console.warn("player no está definido o no tiene name aún");
+    }
+
     this.power = this.data.power || 0;
     this.dialogue = this.data.dialogue;
     this.locked = this.data.locked;
@@ -22,7 +40,7 @@ export default class Npc {
     this.rows = rows;
     this.scale = scale;
 
-    this.frameX = 0; // NPC quieto
+    this.frameX = 0; // npc quieto
     this.frameY = 0; // 0 = ojos abiertos
 
     // parpadeo
@@ -39,7 +57,6 @@ export default class Npc {
   }
 
   randomBlinkTime() {
-    // entre 2 y 5 segundos (a 60fps)
     return Math.floor(50 + Math.random() * 180);
   }
 

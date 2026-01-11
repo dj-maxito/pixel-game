@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import GameLoop from "../engine/GameLoop";
 import DialogueBox from "./DialogueBox.jsx";
+import Npc from "../engine/entities/Npc.js";
+import { Player } from "../engine/entities/Player.js";
+import AudioManager from "../engine/AudioManager.js";
+import NPCS from "../data/npcs.js";
+import Input from "../engine/Input.js";
+import { level1 } from "../level/Level1.js";
 
 export default function Game({ onRestart }) {
   console.log("GAME COMPONENT CARGADO");

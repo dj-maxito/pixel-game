@@ -15,6 +15,7 @@ import paynlandImg from "../assets/sprites/npc/paynland_sprite.png";
 import tortolosImg from "../assets/sprites/npc/tortolos_sprite.png";
 import interactIconImg from "../assets/ui/button_e.png";
 import NPCS from "../data/npcs.js";
+console.log("NPCS importado:", NPCS);
 import globeRed from "../assets/props/globe1.png";
 import globeGreen from "../assets/props/globe2.png";
 import globePink from "../assets/props/globe3.png";
@@ -31,7 +32,7 @@ export default class GameLoop {
 
     this.audio = new AudioManager();
 
-    // Música de fondo
+    // Les gusta la música de fondo??
     this.audio.loadMusic("/sounds/bg-music.mp3", 0.35);
 
     // Sonidos
@@ -115,7 +116,7 @@ export default class GameLoop {
       animSpeed: 8,
     };
 
-    this.playerLevel = 20;
+    this.playerLevel = 0;
 
     this.balloonImages = [
       new Image(),
@@ -274,6 +275,8 @@ export default class GameLoop {
       }),
     ];
 
+    this.npcs.forEach((npc) => console.log(npc.name));
+
     this.interactIcon = new Image();
     this.interactIcon.src = interactIconImg;
     this.interactIcon.onload = () => console.log("ICONO E CARGADO");
@@ -351,7 +354,8 @@ export default class GameLoop {
     //Nombre
     ctx.fillStyle = "#ffd700";
     ctx.font = "bold 22px monospace";
-    const speakerName = this.currentNode.speaker || this.activeNpc.name;
+    const speakerName =
+      this.currentNode?.speaker || this.activeNpc?.name || "???";
 
     ctx.fillText(speakerName, 30, h - 120);
 

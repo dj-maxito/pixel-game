@@ -303,18 +303,19 @@ export default class GameLoop {
   }
 
   start() {
-    console.log("GAMELOOP START");
-    requestAnimationFrame(this.loop.bind(this));
+    this.running = true;
+    this.rafId = requestAnimationFrame(this.loop);
   }
+
+  loop = () => {
+    if (!this.running) return;
+    this.draw();
+    this.rafId = requestAnimationFrame(this.loop);
+  };
 
   stop() {
     this.running = false;
-  }
-
-  loop() {
-    if (!this.running) return;
-    this.draw();
-    requestAnimationFrame(this.loop.bind(this));
+    cancelAnimationFrame(this.rafId);
   }
 
   drawDialogue() {

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import GameLoop from "../engine/GameLoop";
-import NPCS from "../data/npcs";
-import DialogueBox from "./DialogueBox";
+import DialogueBox from "./DialogueBox.jsx";
 
-export default function Game() {
+export default function Game({ onRestart }) {
   console.log("GAME COMPONENT CARGADO");
   const canvasRef = useRef(null);
   const [dialogue, setDialogue] = useState(null);
@@ -65,7 +64,7 @@ export default function Game() {
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
           <button
             className="px-5 py-1 mt-100 bg-white text-black font-extrabold font-mono text-lg rounded hover:bg-gray-200"
-            onClick={() => window.location.reload()}
+            onClick={onRestart}
           >
             Volver a jugar :P
           </button>

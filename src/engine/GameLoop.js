@@ -23,10 +23,22 @@ import globeLightBlue from "../assets/props/globe5.png";
 import globeYellow from "../assets/props/globe6.png";
 import guardianImg from "../assets/sprites/npc/squip_sprite.png";
 import doorImg from "../assets/props/door.png";
+import AudioManager from "../engine/AudioManager";
 
 export default class GameLoop {
   constructor(ctx, callbacks) {
     console.log("GAMELOOP CONSTRUIDO");
+
+    this.audio = new AudioManager();
+
+    // Música de fondo
+    this.audio.loadMusic("/sounds/bg-music.mp3", 0.35);
+
+    // Sonidos
+    this.audio.loadSound("interact", "/sounds/interact.wav", 0.6);
+    this.audio.loadSound("dialogue", "/sounds/dialogue.wav", 0.5);
+    this.audio.loadSound("select", "/sounds/click.mp3", 0.5);
+    this.audio.loadSound("victory", "/sounds/victory.mp3", 0.8);
 
     this.input = new Input();
 
@@ -527,6 +539,8 @@ export default class GameLoop {
         (this.input.isPressed("e") || this.input.isDown("E")) &&
         !this.dialogueActive
       ) {
+        this.audio.playMusic();
+        this.audio.playSound("interact");
         console.log("E PRESIONADA");
         console.log("comenzamos dialogo");
 
@@ -790,6 +804,9 @@ export default class GameLoop {
 
       if (!this.victoryNotified) {
         this.victoryNotified = true;
+        this.audio.stopMusic();
+        this.audio.playSound("victory");
+
         if (this.callbacks?.onVictory) {
           this.callbacks.onVictory();
         }

@@ -9,7 +9,8 @@ export default function Game() {
   const [dialogue, setDialogue] = useState(null);
   const [dialogueIndex, setDialogueIndex] = useState(0);
   const [currentNpc, setCurrentNpc] = useState(null);
-  const [playerLevel, setPlayerLevel] = useState(1);
+  const [playerLevel, setPlayerLevel] = useState(0);
+  const [victory, setVictory] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -24,7 +25,16 @@ export default function Game() {
     window.addEventListener("resize", resizeCanvas);
 
     const game = new GameLoop(ctx, {
-      isPaused: () => false,
+      onGainPower: (amount) => {
+        setPlayerLevel((prev) => {
+          const newLevel = prev + amount;
+          game.setPlayerLevel(newLevel);
+          return newLevel;
+        });
+      },
+      onVictory: () => {
+        setVictory(true);
+      },
     });
 
     game.start();
@@ -49,9 +59,20 @@ export default function Game() {
 
   return (
     <div className="relative">
-      <canvas ref={canvasRef} className="bg-sky-300 h-screen w-screen" />
+      <canvas ref={canvasRef} className=" h-screen w-screen" />
 
-      <div className="absolute top-2 left-2 bg-black text-white px-3 py-1 rounded">
+      {victory && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
+          <button
+            className="px-5 py-1 mt-100 bg-white text-black font-extrabold font-mono text-lg rounded hover:bg-gray-200"
+            onClick={() => window.location.reload()}
+          >
+            Volver a jugar :P
+          </button>
+        </div>
+      )}
+
+      <div className="absolute top-2 left-2 bg-blue-100 bg-opacity-50 text-black font-mono font-bold px-3 py-1 rounded">
         Nivel: {playerLevel}
       </div>
 

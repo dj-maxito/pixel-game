@@ -1,8 +1,13 @@
 export default class Input {
   constructor() {
     this.keys = {};
+    this.pressed = {};
 
     window.addEventListener("keydown", (e) => {
+      console.log("TECLA:", e.key);
+      if (!this.keys[e.key]) {
+        this.pressed[e.key] = true;
+      }
       this.keys[e.key] = true;
     });
 
@@ -13,5 +18,13 @@ export default class Input {
 
   isDown(key) {
     return this.keys[key];
+  }
+
+  isPressed(key) {
+    if (this.keys[key]) {
+      this.keys[key] = false;
+      return true;
+    }
+    return false;
   }
 }

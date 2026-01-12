@@ -22,6 +22,10 @@ export default function Game({ onRestart }) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    // debugg
+    ctx.fillStyle = "purple";
+    ctx.fillRect(0, 0, 400, 400);
+
     const game = new GameLoop(ctx, {
       onVictory: () => setVictory(true),
       onGainPower: (amount) => setPlayerLevel((p) => p + amount),

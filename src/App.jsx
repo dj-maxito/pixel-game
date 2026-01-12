@@ -1,20 +1,20 @@
-import "./index.css";
-import Game from "./components/Game";
 import { useState } from "react";
 import Access from "./components/Access";
+import Game from "./components/Game";
 
 export default function App() {
-  const [authorized, setAuthorized] = useState(false);
+  const [allowed, setAllowed] = useState(false);
   const [gameKey, setGameKey] = useState(0);
 
   function restartGame() {
-    setGameKey((k) => k + 1);
+    setGameKey((k) => k + 1); // fuerza remount total
+    setAllowed(false);
   }
 
   return (
     <>
-      {!authorized && <Access onSuccess={() => setAuthorized(true)} />}
-      {authorized && <Game key={gameKey} onRestart={restartGame} />}
+      {!allowed && <Access onSuccess={() => setAllowed(true)} />}
+      {allowed && <Game key={gameKey} onRestart={restartGame} />}
     </>
   );
 }

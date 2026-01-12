@@ -10,7 +10,7 @@ export class Player {
     this.onGround = false;
 
     // Nivel de poder
-    this.powerLevel = 1;
+    this.powerLevel = 0;
 
     // Sprite
     this.image = new Image();

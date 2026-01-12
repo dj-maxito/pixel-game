@@ -24,19 +24,21 @@ import globeLightBlue from "../assets/props/globe5.png";
 import globeYellow from "../assets/props/globe6.png";
 import guardianImg from "../assets/sprites/npc/squip_sprite.png";
 import doorImg from "../assets/props/door.png";
-import AudioManager from "../engine/AudioManager";
+import AudioManager from "./AudioManager.js";
 
 export default class GameLoop {
   constructor(ctx, callbacks) {
     console.log("GAMELOOP CONSTRUIDO");
 
-    this.audio = new AudioManager();
+    this.ctx = ctx;
+    this.callbacks = callbacks;
 
-    // Les gusta la música de fondo??
-    this.audio.loadMusic("/sounds/bg-music.mp3", 0.35);
+    this.audio = new AudioManager();
+    this.audio.loadMusic("/sounds/bg-music.mp3");
+
+    console.log("AudioManager inicializado:", this.audio);
 
     // Sonidos
-    this.audio.loadSound("interact", "/sounds/interact.wav", 0.6);
     this.audio.loadSound("select", "/sounds/click.mp3", 0.5);
     this.audio.loadSound("victory", "/sounds/victory.mp3", 0.8);
 
@@ -317,6 +319,7 @@ export default class GameLoop {
   }
 
   start() {
+    console.log("GAME START");
     this.running = true;
     this.rafId = requestAnimationFrame(this.loop);
   }
@@ -330,6 +333,11 @@ export default class GameLoop {
   stop() {
     this.running = false;
     cancelAnimationFrame(this.rafId);
+  }
+
+  startMusic() {
+    console.log("START MUSIC");
+    this.audio.playMusic();
   }
 
   drawDialogue() {
@@ -442,6 +450,8 @@ export default class GameLoop {
   }
 
   draw() {
+    this.ctx.fillStyle = "red";
+    this.ctx.fillRect(0, 0, 200, 200);
     const canvas = this.ctx.canvas;
     const w = canvas.width;
     const h = canvas.height;
@@ -542,8 +552,6 @@ export default class GameLoop {
         (this.input.isPressed("e") || this.input.isDown("E")) &&
         !this.dialogueActive
       ) {
-        this.audio.playMusic();
-        this.audio.playSound("interact");
         console.log("E PRESIONADA");
         console.log("comenzamos dialogo");
 
@@ -729,6 +737,8 @@ export default class GameLoop {
             const npcPower = this.activeNpc.power || 1;
             this.addLevelPopup(npcPower);
 
+            this.playerLevel += npcPower;
+
             if (this.callbacks?.onGainPower) {
               this.callbacks.onGainPower(npcPower);
             }
@@ -791,6 +801,7 @@ export default class GameLoop {
         this.fadeAlpha = 1;
         this.transitioning = false;
         this.victory = true;
+        console.log("VICTORY ACTIVADA");
       }
 
       this.ctx.fillStyle = `rgba(0,0,0,${this.fadeAlpha})`;
@@ -800,54 +811,50 @@ export default class GameLoop {
     if (this.victory) {
       this.victoryTimer++;
 
-      const alpha = Math.min(this.victoryTimer / 60, 1); // fade in
+      const alpha = Math.min(this.victoryTimer / 60, 1);
       this.textBounce = Math.sin(this.victoryTimer / 10) * 8;
 
-      this.victory = true;
+      // Fondo negro con fade
+      this.ctx.save();
+      this.ctx.globalAlpha = alpha;
+      this.ctx.fillStyle = "#000";
+      this.ctx.fillRect(0, 0, w, h);
+      this.ctx.restore();
 
+      // Ejecutar solo una vez
       if (!this.victoryNotified) {
         this.victoryNotified = true;
         this.audio.stopMusic();
         this.audio.playSound("victory");
-
-        if (this.callbacks?.onVictory) {
-          this.callbacks.onVictory();
-        }
+        if (this.callbacks?.onVictory) this.callbacks.onVictory();
       }
 
-      this.ctx.fillStyle = "black";
-      this.ctx.fillRect(0, 0, w, h);
+      // Confetti
+      this.ctx.save();
+      this.ctx.globalAlpha = 1; // asegurarse que confetti y texto no se vean afectados
+      this.ctx.textAlign = "center";
 
       this.confetti.forEach((c) => {
         c.y += c.speed;
         if (c.y > h) c.y = -10;
-
         this.ctx.fillStyle = c.color;
         this.ctx.fillRect(c.x, c.y, c.size, c.size);
       });
 
-      this.ctx.save();
-      this.ctx.globalAlpha = alpha;
-      this.ctx.textAlign = "center";
-
-      // TÍTULO
-      this.ctx.fillStyle = "#ffffff";
+      // Texto
+      this.ctx.fillStyle = "#fff";
       this.ctx.font = "bold 48px monospace";
       this.ctx.fillText(
         "🎉 FELIZ CUMPLEAÑOS BABOSO 🎉",
         w / 2,
         h / 2 - 30 + this.textBounce
       );
-
-      // SUBTEXTO
       this.ctx.font = "22px monospace";
       this.ctx.fillText(
         "Gracias por jugar",
         w / 2,
         h / 2 + 20 + this.textBounce
       );
-
-      this.ctx.font = "22px monospace";
       this.ctx.fillText(
         "Espero que te guste mucho este jueguito que te hice amigo tqm :)",
         w / 2,

@@ -26,8 +26,7 @@ export default function Access({ onSuccess }) {
     <div
       className={`
         fixed inset-0 z-50 flex items-center justify-center
-        bg-black transition-opacity duration-500
-        ${closing ? "opacity-0" : "opacity-100"}
+        bg-black
       `}
     >
       <form
@@ -53,7 +52,7 @@ export default function Access({ onSuccess }) {
 
         <button
           type="submit"
-          className="bg-pink-500 hover:bg-pink-600 transition rounded py-2 font-bold text-white"
+          className="bg-blue-700 hover:bg-blue-900 transition rounded py-2 font-bold text-white"
         >
           Entrar
         </button>

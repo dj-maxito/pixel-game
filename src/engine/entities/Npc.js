@@ -16,13 +16,11 @@ export default class Npc {
     this.id = id;
     this.data = NPCS[id];
 
-    this.name = this.data.name;
-
-    if (player && player.name) {
-      console.log(player.name);
-    } else {
-      console.warn("player no está definido o no tiene name aún");
+    if (!this.data) {
+      this.data = { name: "Unknown", dialogue: {}, power: 0 };
     }
+
+    this.name = this.data.name;
 
     this.power = this.data.power || 0;
     this.dialogue = this.data.dialogue;

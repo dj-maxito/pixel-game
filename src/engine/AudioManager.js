@@ -9,11 +9,26 @@ export default class AudioManager {
     this.music = new Audio(src);
     this.music.loop = true;
     this.music.volume = volume;
+    console.log("Música cargada:", src);
   }
 
   playMusic() {
-    if (!this.music || this.muted) return;
-    this.music.play().catch(() => {});
+    if (!this.music) {
+      console.log("NO hay musica");
+      return;
+    }
+
+    if (this.muted) {
+      console.log("Está muteado");
+      return;
+    }
+
+    console.log("Intentando reproducir música");
+
+    this.music
+      .play()
+      .then(() => console.log("Música sonando"))
+      .catch((err) => console.error(" Error al reproducir", err));
   }
 
   stopMusic() {
@@ -22,7 +37,7 @@ export default class AudioManager {
     this.music.currentTime = 0;
   }
 
-  loadSound(name, src, volume = 0.7) {
+  loadSound(name, src, volume = 0.5) {
     const audio = new Audio(src);
     audio.volume = volume;
     this.sounds[name] = audio;

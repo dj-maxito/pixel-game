@@ -9,79 +9,56 @@ import Input from "../engine/Input.js";
 import { level1 } from "../level/Level1.js";
 
 export default function Game({ onRestart }) {
-  console.log("GAME COMPONENT CARGADO");
   const canvasRef = useRef(null);
-  const [dialogue, setDialogue] = useState(null);
-  const [dialogueIndex, setDialogueIndex] = useState(0);
-  const [currentNpc, setCurrentNpc] = useState(null);
-  const [playerLevel, setPlayerLevel] = useState(0);
+  const gameRef = useRef(null);
+
   const [victory, setVictory] = useState(false);
+  const [playerLevel, setPlayerLevel] = useState(0);
 
   useEffect(() => {
+    console.log("GAME COMPONENT CARGADO");
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     const game = new GameLoop(ctx, {
+      onVictory: () => setVictory(true),
       onGainPower: (amount) => {
-        setPlayerLevel((prev) => {
-          const newLevel = prev + amount;
-          game.setPlayerLevel(newLevel);
-          return newLevel;
-        });
-      },
-      onVictory: () => {
-        setVictory(true);
+        setPlayerLevel((p) => p + amount);
       },
     });
 
+    gameRef.current = game;
+
     game.start();
+    game.startMusic();
 
     return () => {
       game.stop();
-      window.removeEventListener("resize", resizeCanvas);
     };
   }, []);
 
-  function nextDialogue() {
-    if (dialogueIndex + 1 < dialogue.length) {
-      setDialogueIndex((i) => i + 1);
-    } else {
-      if (currentNpc && dialogues[currentNpc]?.reward) {
-        setPlayerLevel((lvl) => lvl + dialogues[currentNpc].reward);
-      }
-      setDialogue(null);
-      setCurrentNpc(null);
-    }
-  }
-
   return (
     <div className="relative">
-      <canvas ref={canvasRef} className=" h-screen w-screen" />
+      <canvas ref={canvasRef} className="w-screen h-screen block" />
+
+      <div className="absolute top-2 left-2 bg-white px-3 py-1 rounded font-mono">
+        Nivel: {playerLevel}
+      </div>
 
       {victory && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
+        <div className="absolute mt-80 inset-0 flex flex-col items-center justify-center gap-3">
           <button
-            className="px-5 py-1 mt-100 bg-white text-black font-extrabold font-mono text-lg rounded hover:bg-gray-200"
             onClick={onRestart}
+            className="relative px-8 py-2 rounded-md bg-white isolation-auto z-10 border-2 border-blue-700 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full hover:text-white before:-right-full before:hover:right-0 before:rounded-full before:bg-blue-900 before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700 inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-black bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-blue-900 disabled:opacity-50 disabled:pointer-events-none"
           >
             Volver a jugar :P
           </button>
         </div>
       )}
-
-      <div className="absolute top-2 left-2 bg-blue-100 bg-opacity-50 text-black font-mono font-bold px-3 py-1 rounded">
-        Nivel: {playerLevel}
-      </div>
-
-      <DialogueBox dialogue={dialogue?.[dialogueIndex]} onNext={nextDialogue} />
     </div>
   );
 }

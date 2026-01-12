@@ -298,6 +298,8 @@ export default class GameLoop {
 
     this.confetti = [];
 
+    this.musicStarted = false;
+
     for (let i = 0; i < 120; i++) {
       this.confetti.push({
         x: Math.random() * this.ctx.canvas.width,
@@ -554,6 +556,12 @@ export default class GameLoop {
       ) {
         console.log("E PRESIONADA");
         console.log("comenzamos dialogo");
+
+        if (!this.musicStarted) {
+          this.startMusic();
+          this.musicStarted = true;
+          console.log("Música iniciada al presionar E");
+        }
 
         this.dialogueActive = true;
         this.activeNpc = npc;

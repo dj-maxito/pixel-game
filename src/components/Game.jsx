@@ -26,9 +26,7 @@ export default function Game({ onRestart }) {
 
     const game = new GameLoop(ctx, {
       onVictory: () => setVictory(true),
-      onGainPower: (amount) => {
-        setPlayerLevel((p) => p + amount);
-      },
+      onGainPower: (amount) => setPlayerLevel((p) => p + amount),
     });
 
     gameRef.current = game;
@@ -38,18 +36,20 @@ export default function Game({ onRestart }) {
     const startMusicOnce = () => {
       console.log("Usuario interactuó: desbloqueando música");
       game.startMusic();
-
-      window.removeEventListener("keydown", startMusicOnce);
-      window.removeEventListener("click", startMusicOnce);
+      canvas.removeEventListener("keydown", startMusicOnce);
+      canvas.removeEventListener("click", startMusicOnce);
     };
 
-    window.addEventListener("keydown", startMusicOnce);
-    window.addEventListener("click", startMusicOnce);
+    canvas.addEventListener("click", startMusicOnce);
+    canvas.addEventListener("keydown", startMusicOnce);
+
+    canvas.tabIndex = 0;
+    canvas.focus();
 
     return () => {
       game.stop();
-      window.removeEventListener("keydown", startMusicOnce);
-      window.removeEventListener("click", startMusicOnce);
+      canvas.removeEventListener("click", startMusicOnce);
+      canvas.removeEventListener("keydown", startMusicOnce);
     };
   }, []);
 

@@ -34,10 +34,22 @@ export default function Game({ onRestart }) {
     gameRef.current = game;
 
     game.start();
-    game.startMusic();
+
+    const startMusicOnce = () => {
+      console.log("Usuario interactuó: desbloqueando música");
+      game.startMusic();
+
+      window.removeEventListener("keydown", startMusicOnce);
+      window.removeEventListener("click", startMusicOnce);
+    };
+
+    window.addEventListener("keydown", startMusicOnce);
+    window.addEventListener("click", startMusicOnce);
 
     return () => {
       game.stop();
+      window.removeEventListener("keydown", startMusicOnce);
+      window.removeEventListener("click", startMusicOnce);
     };
   }, []);
 

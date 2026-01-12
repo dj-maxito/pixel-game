@@ -16,8 +16,6 @@ export default function Game({ onRestart }) {
   const [playerLevel, setPlayerLevel] = useState(0);
 
   useEffect(() => {
-    console.log("GAME COMPONENT CARGADO");
-
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
@@ -26,13 +24,12 @@ export default function Game({ onRestart }) {
 
     const game = new GameLoop(ctx, {
       onVictory: () => setVictory(true),
-      onGainPower: (amount) => {
-        setPlayerLevel((p) => p + amount);
-      },
+      onGainPower: (amount) => setPlayerLevel((p) => p + amount),
     });
 
     gameRef.current = game;
 
+    game.startMusic();
     game.start();
 
     return () => {

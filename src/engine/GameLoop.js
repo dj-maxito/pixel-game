@@ -341,9 +341,12 @@ export default class GameLoop {
     if (this.musicStarted) return;
     this.musicStarted = true;
 
-    this.audio.playMusic()?.catch((err) => {
-      console.warn("No se pudo reproducir la música:", err);
-    });
+    try {
+      this.audio.playMusic();
+      console.log("Música iniciada");
+    } catch (err) {
+      console.warn("Error al reproducir música:", err);
+    }
   }
 
   drawDialogue() {

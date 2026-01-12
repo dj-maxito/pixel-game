@@ -338,8 +338,12 @@ export default class GameLoop {
   }
 
   startMusic() {
-    console.log("START MUSIC");
-    this.audio.playMusic();
+    if (this.musicStarted) return;
+    this.musicStarted = true;
+
+    this.audio.playMusic()?.catch((err) => {
+      console.warn("No se pudo reproducir la música:", err);
+    });
   }
 
   drawDialogue() {

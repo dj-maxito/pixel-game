@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CORRECT_CODE = "100105";
+const CORRECT_CODE = "100106";
 
 export default function Access({ onSuccess }) {
   const [code, setCode] = useState("");

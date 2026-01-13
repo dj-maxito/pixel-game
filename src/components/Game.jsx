@@ -52,7 +52,7 @@ export default function Game({ onRestart }) {
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
           <button
             onClick={() => window.location.reload()}
-            className="px-8 py-2 bg-white rounded border-2 border-blue-700 hover:bg-blue-900 hover:text-white"
+            className="px-8 py-2 mt-100 bg-white rounded border-2 border-blue-700 hover:bg-blue-900 hover:text-white"
           >
             Volver a jugar :P
           </button>

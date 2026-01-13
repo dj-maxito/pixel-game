@@ -110,7 +110,7 @@ export default class GameLoop {
       vx: 0,
       vy: 0,
 
-      speed: 7,
+      speed: 5,
       gravity: 0.8,
       onGround: false,
 
@@ -890,7 +890,7 @@ export default class GameLoop {
       );
       this.ctx.font = "22px monospace";
       this.ctx.fillText(
-        "Gracias por jugar",
+        "Gracias por jugar (un poquito atrasado el regalo me perdonas)",
         w / 2,
         h / 2 + 20 + this.textBounce
       );

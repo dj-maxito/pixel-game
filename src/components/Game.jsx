@@ -32,7 +32,10 @@ export default function Game({ onRestart }) {
     });
 
     gameRef.current = game;
-    game.start();
+    game.loadAssets().then(() => {
+      console.log("Todos los assets cargados, iniciando gameLoop");
+      game.start();
+    });
 
     return () => game.stop();
   }, []);

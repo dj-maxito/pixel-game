@@ -458,6 +458,30 @@ export default class GameLoop {
     });
   }
 
+  loadAssets() {
+    const images = [
+      this.background,
+      this.clouds,
+      this.mountains,
+      this.forest,
+      this.groundTile,
+      this.playerSprite,
+      this.cborleImg,
+      this.mikeyImg,
+      // todos los NPCs...
+    ];
+
+    return Promise.all(
+      images.map(
+        (img) =>
+          new Promise((resolve) => {
+            if (img.complete && img.width > 0) resolve();
+            else img.onload = resolve;
+          })
+      )
+    );
+  }
+
   draw() {
     this.ctx.fillStyle = "red";
     this.ctx.fillRect(0, 0, 200, 200);
